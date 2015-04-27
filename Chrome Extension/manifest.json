@@ -1,7 +1,7 @@
 {
-	"manifest_version": 2,
+  "manifest_version": 2,
   "name": "Swag Alerts",
-  "description": "This extension alerts you with the maximum level of swag."
+  "description": "This extension alerts you with the maximum level of swag.",
   "version": "1.0",
 
   //puts icons in the toolbar (right of the address bar)
@@ -11,8 +11,10 @@
   },
 
   "permissions": [
+    "alarms"
     "activeTab",
     "https://ajax.googleapis.com/"
+    "notifications"
   ]
 
 }
