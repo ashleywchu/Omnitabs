@@ -1,19 +1,32 @@
-// background.js
+var tabs = [];
 
-// Called when the user clicks on the browser action.
-chrome.browserAction.onClicked.addListener(function(tab) {
-  // Send a message to the active tab
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    var activeTab = tabs[0];
-    chrome.tabs.sendMessage(activeTab.id, {"message": "clicked_browser_action"});
+// Push all open tabs into tabs array
+function getTabTitles() {
+  var tempTabs = [];
+  chrome.windows.getAll({populate:true},function(windows){
+    windows.forEach(function(window){
+      window.tabs.forEach(function(tab){
+        tempTabs.push(tab.title);
+      });
+    });
   });
-});
+  tabs = tempTabs;
+}
 
-// This block is new!
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if( request.message === "open_new_tab" ) {
-      chrome.tabs.create({"url": request.url});
-    }
-  }
-);
+// Init
+function init() {
+  tabs = [];
+
+  // Collect open windows
+  getTabTitles();
+
+  // Attach listeners to the following Chrome tab movements
+  chrome.tabs.onCreated.addListener(onTabCreated);
+  chrome.tabs.onUpdated.addListener(onTabUpdated);
+  chrome.tabs.onMoved.addListener(onTabMoved);
+  chrome.tabs.onAttached.addListener(onTabAttached);
+  chrome.tabs.onRemoved.addListener(onTabRemoved);
+}
+
+// Initialize with init()
+init();
