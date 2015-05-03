@@ -14,6 +14,6 @@ function runSearch() {
 // Returns fuzzy matched results
 function searchTabs(searchString, tabs) {
   var results = fuzzy.filter(searchString, tabs);
-  var matches = results.map(function(el) { return el.string; });
-  $("#tabs-list").append(matches); 
+  var matches = results.map(function(el) { return "<li>" + el.string + "</li>"; });
+  $("#tabs-list").html(matches); 
 }
