@@ -1,5 +1,5 @@
+// Run runSearch function after keypress
 $(document).ready(function() {
-  // Run runSearch function after keypress
   $('#searchbox').on({
     'keyup': runSearch
   });

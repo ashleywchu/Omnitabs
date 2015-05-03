@@ -13,11 +13,18 @@ function getTabTitles() {
   tabs = tempTabs;
 }
 
+// Update tabs array on change
+function onTabCreated() { getTabTitles(); }
+function onTabUpdated() { getTabTitles(); }
+function onTabMoved() { getTabTitles(); }
+function onTabAttached() { getTabTitles(); }
+function onTabRemoved() { getTabTitles(); }
+
 // Init
 function init() {
   tabs = [];
 
-  // Collect open windows
+  // Collect currently open windows
   getTabTitles();
 
   // Attach listeners to the following Chrome tab movements
