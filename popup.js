@@ -7,52 +7,62 @@ $(document).ready(function() {
 
   // Run runSearch function after keypress
   $('#searchbox').on({
-    'keyup': runSearch
+    'keyup': runSearch,
   });
 
-  $( ".selected" ).on( "click", function(event) {
-      event.preventDefault();
-      alert("Hello! I am an alert box!!");
+  // Swap to searched Chrome tab
+  $("form").submit(function(event) {
+    event.preventDefault();
+    tabId = Number($("#tabtitle").val());
+    chrome.tabs.update(tabId, {selected: true});
   });
 
+  // Handle tab selection and passes tab id into form hidden field
   $("#searchbox").on('keyup', function(e){
-      // Down
-      if(e.keyCode == 40){
-          if(liSelected){
-              liSelected.removeClass('selected');
-              liIndex += 1;
-              next = li.eq(liIndex);
+    // Down
+    if(e.keyCode == 40){
+        if(liSelected){
+            liSelected.removeClass('selected');
+            liIndex += 1;
+            next = li.eq(liIndex);
 
-              if(next.length > 0){
-                  liSelected = next.addClass('selected');
-              }else{
-                  liSelected = li.eq(0).addClass('selected');
-                  liIndex = 0;
-              }
-          }else{
-              liSelected = li.eq(0).addClass('selected');
-          }
-        // Up
-      }else if(e.keyCode == 38){
-          if(liSelected){
-              liSelected.removeClass('selected');
-              liIndex -= 1;
-              next = li.eq(liIndex);
-              if(next.length > 0){
-                  liSelected = next.addClass('selected');
-              }else{
-                  liSelected = li.last().addClass('selected');
-                  liIndex = 0;
-              }
+            if(next.length > 0){
+                liSelected = next.addClass('selected');
+                selectedTab = $(".selected").text();
+                $("#tabtitle").val($.grep(chrome.extension.getBackgroundPage().tabs, function(e){ return e.title === selectedTab; })[0].id);
+            }else{
+                liSelected = li.eq(0).addClass('selected');
+                selectedTab = $(".selected").text();
+                $("#tabtitle").val($.grep(chrome.extension.getBackgroundPage().tabs, function(e){ return e.title === selectedTab; })[0].id);
+                liIndex = 0;
+            }
+        }else{
+            liSelected = li.eq(0).addClass('selected');
+            selectedTab = $(".selected").text();
+            $("#tabtitle").val($.grep(chrome.extension.getBackgroundPage().tabs, function(e){ return e.title === selectedTab; })[0].id);
+        }
+    // Up
+    }else if(e.keyCode == 38){
+      if(liSelected){
+          liSelected.removeClass('selected');
+          liIndex -= 1;
+          next = li.eq(liIndex);
+          if(next.length > 0){
+              liSelected = next.addClass('selected');
+              selectedTab = $(".selected").text();
+              $("#tabtitle").val($.grep(chrome.extension.getBackgroundPage().tabs, function(e){ return e.title === selectedTab; })[0].id);
           }else{
               liSelected = li.last().addClass('selected');
+              selectedTab = $(".selected").text();
+              $("#tabtitle").val($.grep(chrome.extension.getBackgroundPage().tabs, function(e){ return e.title === selectedTab; })[0].id);
+              liIndex = 0;
           }
-          // Enter
-      } else if(e.keyCode == 13){ 
-        event.preventDefault();
-        selectedTab = $(".selected").text();
-        $("#searchbox").val(selectedTab);
+      }else{
+          liSelected = li.last().addClass('selected');
+          selectedTab = $(".selected").text();
+          $("#tabtitle").val($.grep(chrome.extension.getBackgroundPage().tabs, function(e){ return e.title === selectedTab; })[0].id);
       }
+    } 
   });
 });
 
@@ -64,19 +74,11 @@ function runSearch() {
 
 // Returns fuzzy matched results
 function searchTabs(searchString, tabs) {
-  var results = fuzzy.filter(searchString, tabs);
+  var options = {
+    extract: function(e) { return e.title; }
+  };
+  var results = fuzzy.filter(searchString, tabs, options);
   var matches = results.map(function(e) { return "<li>" + e.string + "</li>"; });
   $("#tabs-list").html(matches); 
   li = $("li");
 }
-
-// window.addEventListener("keydown", navigateTabs, false);
-
-// function navigateTabs(e) {
-//   switch (e.keycode) {
-//     case 38:
-//       break;
-//     case 40:
-//       break;
-//   }
-// }
