@@ -4,6 +4,8 @@ var liSelected;
 var liIndex = 0;
 
 $(document).ready(function() {
+  // Hide submit button
+  $('#submit').hide();
 
   // Run runSearch function after keypress
   $('#searchbox').on({
