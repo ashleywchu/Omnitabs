@@ -18,6 +18,17 @@
   "permissions": [
     "tabs"
   ],
+
+  // Keyboard shortcut
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Alt+F",
+        "mac": "Alt+F"
+      }
+    }
+  },
+
   // Spent a day and a half figuring security policy out
   "content_security_policy": "script-src 'self' https://www.google.com; object-src 'self'"
 }
